@@ -30,6 +30,19 @@ module.exports = {
         }
         
         try {
+                            if(!interaction.member.permissions.has([command.userPerms])){
+            const permisos  = new client.discord.MessageEmbed()
+            .setDescription("<:m_error:1009590117381455944> \`|\` Nececitas permisos para usar este comando\n\nPermiso requerido: `"+command.userPerms+"`")
+            .setColor("RED")
+            return interaction.reply({ ephemeral: true, embeds: [permisos]})
+        }
+
+        if(!interaction.guild.me.permissions.has([command.botPerms])){
+            const ejecutar = new client.discord.MessageEmbed()
+            .setDescription("<:m_error:1009590117381455944> \`|\` Nececito permisos para usar este comando\n\nPermiso requerido: `"+command.botPerms+"`")
+            .setColor("RED")
+            return interaction.reply({ ephemeral: true, embeds: [ejecutar]})
+        }
             command.run(client, interaction, args);
         } catch (e) {
             interaction.reply({ content: e.message });

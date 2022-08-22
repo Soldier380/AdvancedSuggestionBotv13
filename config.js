@@ -1,8 +1,9 @@
 
 module.exports = {
-    botClientID: "YOUR_BOT_ID",
+    botClientID: "ID_DE_TU_BOT",
     botPrefix: "!",
-    ownerID: "YOUR_ID",
+    ownerID: "TU_ID",
+    Mongo: "URL_DEL_MONGO",
     embedColor: "#00dbff",
-    embedfooterText: "Discord.js v13 Example by Expectatives#1157"
+    embedfooterText: "sOldIErdEv"
 }

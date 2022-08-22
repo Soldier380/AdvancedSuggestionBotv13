@@ -11,4 +11,4 @@ const NoteSchema = new Schema({
     status: { type: String, required: false }
 })
 
-module.exports = mongoose.model('SpacexSuggestions', NoteSchema );
+module.exports = mongoose.model('Suggestions', NoteSchema );

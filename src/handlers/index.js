@@ -1,10 +1,6 @@
 
 const fs    = require("fs");
-const chalk = require("chalk");
 
-/**
- * Load Events
- */
 const loadEvents = async function (client) {
     const eventFolders = fs.readdirSync(`${client.cwd}/src/events`);
     for (const folder of eventFolders) {
@@ -16,9 +12,9 @@ const loadEvents = async function (client) {
             const event = require(`${client.cwd}/src/events/${folder}/${file}`);
             
             if (event.name) {
-                console.log(chalk.bgBlueBright.black(` ✔️ => Event ${file} is being loaded `));
+    
             } else {
-                console.log(chalk.bgRedBright.black(` ❌ => Event ${file} missing a help.name or help.name is not in string `));
+                console.log(chalk.bgRedBright.black(` ❌ => Evento ${file} nececita ayuda`));
                 continue;
             }
             
@@ -35,20 +31,20 @@ const loadEvents = async function (client) {
  * Load Prefix Commands
  */
 const loadCommands = async function (client) {
-    const commandFolders = fs.readdirSync(`${client.cwd}/src/commands/legacy/`);
+    const commandFolders = fs.readdirSync(`${client.cwd}/src/commands/`);
     for (const folder of commandFolders) {
         const commandFiles = fs
-            .readdirSync(`${client.cwd}/src/commands/legacy/${folder}`)
+            .readdirSync(`${client.cwd}/src/commands/${folder}`)
             .filter((file) => file.endsWith(".js"));
         
         for (const file of commandFiles) {
-            const command = require(`${client.cwd}/src/commands/legacy/${folder}/${file}`);
+            const command = require(`${client.cwd}/src/commands/${folder}/${file}`);
             
             if (command.name) {
                 client.commands.set(command.name, command);
-                console.log(chalk.bgBlueBright.black(` ✔️ => Prefix Command ${file} is being loaded `));
+   
             } else {
-                console.log(chalk.bgRedBright.black(` ❌ => Prefix Command ${file} missing a help.name or help.name is not in string `));
+                console.log(chalk.bgRedBright.black(` ❌ => Prefix Command ${file} nececita ayuda`));
                 continue;
             }
             
@@ -76,21 +72,20 @@ const loadSlashCommands = async function (client) {
             if (command.name) {
                 client.slash.set(command.name, command);
                 slash.push(command)
-                console.log(chalk.bgBlueBright.black(` ✔️ => SlashCommand ${file} is being loaded `));
             } else {
-                console.log(chalk.bgRedBright.black(` ❌ => SlashCommand ${file} missing a help.name or help.name is not in string `));
+                console.log(chalk.bgRedBright.black(` ❌ => SlashCommand ${file} Nececita ayuda `));
                 continue;
             }
         }
     }
 
     client.on("ready", async() => {
-        // Register Slash Commands for a single guild
+        // Registrar los comandos para un solo servidor
         // await client.guilds.cache
         //    .get("YOUR_GUILD_ID")
         //    .commands.set(slash);
 
-        console.log('Register Slash Commands for all the guilds.');
+        console.log('Comandos de barra registrados.');
         await client.application.commands.set(slash)
     })
 }

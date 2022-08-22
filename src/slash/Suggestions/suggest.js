@@ -4,7 +4,7 @@ module.exports = {
     name: "suggest",
     aliases: ["sug", "sgg"],
     category: "Utility",
-    description: "Check the bot's ping!",
+    description: "Acepta o rechaza una sugerencia",
     ownerOnly: false,
     botPerms: ["MANAGE_MESSAGES"],
     userPerms: ["MANAGE_MESSAGES"],
@@ -19,32 +19,34 @@ name: "id",
 description: "Id del mensaje de la sugerencia",
 type: "STRING",
 required: true
+}, {
+name: "razon",
+description: "Razon de la aceptacion/denegacion",
+type: "STRING",
+required: false
 }],
-    run: async (client, message, args, errorMessage, success, prefix) => {       
+    run: async (client, message, args) => {       
         const g = await client.GuildConfig.findOne({ guildId: message.guild.id})
         if(!g?.suggestionChannel){
             return interaction.reply({ content: "No hay canal de sugerencias establecido, no puedes aceptar ni rechazara ninguna", ephemeral: true})
         }
- const action = args[0]
- if(!action){
-      return interaction.reply({ , ephemeral: true, content: "Ingresa: `"+prefix+"suggest deny | rechazar` o `"+prefix+"suggest accept | aceptar`"})
- }
-        
+ const action = interaction.options.getString("accion", true)
+
  if(action === "Aceptar"){
-const id = args[1]
+const id = interaction.options.getString("id")
     const s = await Suggestions.findOne({ suggestion_id: id })
 if(!s){
-return errorMessage("No encuentro esa sugerencia", true)
+return interaction.reply({ ephemeral: true, content: "No encuentro esa sugerencia" })
 }
 const data = await client.GuildConfig.findOne({ guildId: message.guild.id })
-const ch = message.guild.channels.cache.get(data?.suggestionChannel)
+const ch = interaction.guild.channels.cache.get(data?.suggestionChannel)
 
-     const razon = args.slice(2).join(" ")
+     const razon = interaction.options.getString("razon")
 try{
   ch.messages.fetch(id).then((msg) => {
 const suggestionEmbed = msg.embeds[0];
 if(s?.status === "accepted"){
-    return interaction.reply({ , ephemeral: true, content: "ste sugerencia ya esta aceptada" })
+    return interaction.reply({ ephemeral: true, content: "esta sugerencia ya esta aceptada" })
 }
 if(!razon){
 suggestionEmbed.fields[2].name = "・ Status";
@@ -59,28 +61,28 @@ suggestionEmbed.color = "GREEN"
       const su1 = new client.discord.MessageEmbed()
       .setDescription(client.success + " `|` La sugerencia fue aceptada, [saltar a la sugerencia]("+msg.url+")")
       .setColor("DARK_BUT_NOT_BLACK")
-        message.channel.send({ embeds: [su1]})   
+        interaction.reply({ embeds: [su1]})   
  }).catch(err => console.log(err))
     await Suggestions.findOneAndUpdate({ suggestion_id: id}, { status: "accepted" })
 
 } catch {
-    return interaction.reply({ , ephemeral: true, content:"No encontre esa sugerencia"})
+    return interaction.reply({ ephemeral: true, content:"No encontre esa sugerencia"})
 }
- } else  if(action === "deny" || action === "rechazar"){
+ } else  if(action === "Rechazar"){
 const id = args[1]
     const s = await Suggestions.findOne({ suggestion_id: id })
 if(!s){
-return errorMessage("No encontre esa sugerencia", true)
+return interaction.reply({ ephemeral: true, content: "No encontre esa sugerencia" })
 }
      const razon = args.slice(2).join(" ")
 const data = await client.GuildConfig.findOne({ guildId: message.guild.id })
-const ch = message.guild.channels.cache.get(data?.suggestionChannel)
+const ch = interaction.guild.channels.cache.get(data?.suggestionChannel)
 try{
         const s = await Suggestions.findOne({ suggestion_id: id })
   ch.messages.fetch(id).then((msg) => {
 const suggestionEmbed = msg.embeds[0];
 if(s?.status === "deny"){
-    return errorMessage("Este sugerencia ya esta rechazada")
+    return interaction.reply({  ephemeral: true, content: "Este sugerencia ya esta rechazada" })
 }
 if(!razon){
 suggestionEmbed.fields[2].name = "・ Status";
@@ -95,16 +97,14 @@ suggestionEmbed.color = "RED"
       const su1 = new client.discord.MessageEmbed()
       .setDescription(client.success + " `|` La sugerencia fue rechazada, [saltar a la sugerencia]("+msg.url+")")
       .setColor("DARK_BUT_NOT_BLACK")
-        message.channel.send({ embeds: [su1]})   
+        interaction.reply({ embeds: [su1]})   
  }).catch(err => console.log(err))
     await Suggestions.findOneAndUpdate({ suggestion_id: id}, { status: "deny" })
 
 } catch {
-    return errorMessage("No encuentro esa sugerencia")
+    return interaction.reply({ ephemeral: true, content: "No encuentro esa sugerencia" })
 }
- } else {
-     return errorMessage("Ingresa: `"+prefix+"suggest deny | rechazar` o `"+prefix+"suggest accept | aceptar`")
- }
+
         
         
     }

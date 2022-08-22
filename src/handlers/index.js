@@ -60,14 +60,14 @@ const loadCommands = async function (client) {
 const loadSlashCommands = async function (client) {
     let slash = [];
 
-    const commandFolders = fs.readdirSync(`${client.cwd}/src/commands/slash`);
+    const commandFolders = fs.readdirSync(`${client.cwd}/src/slash`);
     for (const folder of commandFolders) {
         const commandFiles = fs
-            .readdirSync(`${client.cwd}/src/commands/slash/${folder}`)
+            .readdirSync(`${client.cwd}/src/slash/${folder}`)
             .filter((file) => file.endsWith(".js"));
         
         for (const file of commandFiles) {
-            const command = require(`${client.cwd}/src/commands/slash/${folder}/${file}`);
+            const command = require(`${client.cwd}/src/slash/${folder}/${file}`);
             
             if (command.name) {
                 client.slash.set(command.name, command);

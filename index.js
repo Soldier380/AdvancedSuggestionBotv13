@@ -7,6 +7,8 @@ console.debug(`Booting up…`);
 const Discord = require('discord.js');
 const { Client, Collection, Intents } = Discord;
 const handler = require("./src/handlers/index");
+const GuildConfig = require("./src/handlers/models/GuildConfig")
+const Suggestions = require("./src/handlers/models/Suggestions")
 
 const client = new Client({
     intents: [
@@ -53,6 +55,10 @@ process.on("uncaughtException", (err) => {
 process.on("unhandledRejection", (reason, promise) => {
     console.error("[FATAL] Possibly Unhandled Rejection at: Promise", promise, "\nreason:", reason.message);
 });
+
+require("./database.js")
+require("./src/handlers/client/suggestSystem.js")(client)
+require("./src/handlers/client/suggestFunction.js")(client)
 
 // Login Discord Bot Token
 client.login(process.env.TOKEN);

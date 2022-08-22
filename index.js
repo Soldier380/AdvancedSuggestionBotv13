@@ -37,6 +37,9 @@ require('dotenv').config();
 client.discord  = Discord;
 client.commands = new Collection();
 client.slash    = new Collection();
+client.error = ":x:"
+client.success = `:white_check_mark: `
+client.GuildConfig = GuildConfig;
 client.config   = require('./config');
 client.cwd      = require('process').cwd(); // require('path').resolve(``);
 
